@@ -1,0 +1,27 @@
+""" 
+I needed block group codes. ZRP.geo() function created 11 digid tract code which did not involve block group code. So I pulled that info from parquet files saved in /artifacts folder
+I had around 350k observations therefore there were 14 .parquet files. I needed to merge those into a single csv.
+"""
+
+import pandas as pd
+import os
+
+# Define the folder path where your files are located
+folder_path = 'you-folder-path/artifacts/'
+
+# Initialize an empty list to store individual DataFrames
+data_frames = []
+
+# Loop through each .parquet file
+for file in os.listdir(folder_path):
+  # Check the .parquet files
+  if file.endswith('.parquet'):
+    file_path = os.path.join(folder_path, file)
+    df = pd.read_parquet(file_path)
+    data_frames.append(df)
+
+# Concatenate DataFrames into a single file
+merged_df = pd.concat(data_frames, ignore_index=True)
+
+# Save the DataFrame into a .csv file
+merged_df.to_csv('parquet_merged.csv')
